@@ -1075,18 +1075,27 @@ ClusterIcon.prototype.onAdd = function() {
   panes.overlayMouseTarget.appendChild(this.div_);
 
   var that = this;
-  var isDragging = false;
+  var isClusterIconClicked = false;
+  var isClusterIconDragged = false;
+
   google.maps.event.addDomListener(this.div_, 'click', function(event) {
     // Only perform click when not preceded by a drag
-    if (!isDragging) {
+    if (!isClusterIconDragged) {
       that.triggerClusterClick(event);
     }
+
+    isClusterIconClicked = false;
+    isClusterIconDragged = false;
   });
-  google.maps.event.addDomListener(this.div_, 'mousedown', function() {
-    isDragging = false;
+
+  google.maps.event.addDomListener(this.div_, 'mousedown', function(event) {
+    isClusterIconClicked = true;
   });
-  google.maps.event.addDomListener(this.div_, 'mousemove', function() {
-    isDragging = true;
+
+  google.maps.event.addDomListener(that.map_, 'dragend', function() {
+    if(isClusterIconClicked) {
+      isClusterIconDragged = true;
+    }
   });
 };
 
